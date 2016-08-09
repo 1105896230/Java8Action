@@ -16,7 +16,7 @@ import static four_class.Dish.menu;
 public class streamDemo {
 
     public static void main(String[] args) {
-        test9();
+        test12();
     }
 
     /**
@@ -153,5 +153,24 @@ public class streamDemo {
     private static void test10(){
         Stream<String> java = Stream.of("java", "ios");
         Stream<Object> empty = Stream.empty();
+    }
+
+    /**
+     * 迭代 ，这个流是没有结束的必须加个限制 ，
+     * 效果是实现斐波那契数列
+     */
+    private static void test11(){
+        Stream.iterate(new int[]{0, 1}, t -> new int[]{t[1],t[0] + t[1]})
+                .limit(10)
+                .forEach(t -> System.out.println("(" + t[0] + ", " + t[1] + ")"));
+    }
+
+    /**
+     * generate 是获取供应链 ，也是无界的比徐耀加入限制条件
+     */
+    private static void test12(){
+        Stream.generate(Math::random)
+                .limit(10)
+                .forEach(System.out::println);
     }
 }
