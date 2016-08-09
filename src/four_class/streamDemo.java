@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static four_class.Dish.menu;
 
@@ -14,7 +16,7 @@ import static four_class.Dish.menu;
 public class streamDemo {
 
     public static void main(String[] args) {
-        test4();
+        test9();
     }
 
     /**
@@ -78,5 +80,78 @@ public class streamDemo {
         boolean present = any.isPresent();
         System.out.print(present);
         any.ifPresent(dish -> System.out.print(dish.getName()));
+    }
+
+    /**
+     * 归纳
+     */
+    private static void test5(){
+        List<Integer> numbers = Arrays.asList(3,4,5,1,2);
+        int sum = numbers.stream().reduce(0, (a, b) -> a + b);
+        System.out.println(sum);
+
+        int sum2 = numbers.stream().reduce(0, Integer::sum);
+        System.out.println(sum2);
+
+        int max = numbers.stream().reduce(0, (a, b) -> Integer.max(a, b));
+        System.out.println(max);
+
+        Optional<Integer> min = numbers.stream().reduce(Integer::min);
+        min.ifPresent(System.out::println);
+
+        int calories = menu.stream()
+                .map(Dish::getCalories)
+                .reduce(0, Integer::sum);
+        System.out.println("Number of calories:" + calories);
+    }
+
+    /**
+     * map和flatmap的区别
+     */
+    private static void test6(){
+        List<String> words = Arrays.asList("Hello", "World");
+        List<Integer> wordLengths = words.stream()
+                .map(String::length)
+                .collect(Collectors.toList());
+        System.out.println(wordLengths);
+
+        words.stream()
+                .flatMap((String line) -> Arrays.stream(line.split("")))
+                .distinct()
+                .forEach(System.out::println);
+
+    }
+    /**
+     * 避免自动装箱
+     * mapToInt
+     * mapToDouble 等 避免了自动装箱的问题，同时提供sum等便捷的方法
+     */
+    private static void test7(){
+        int value =menu.stream().mapToInt(Dish::getCalories).sum();
+        System.out.print(value);
+    }
+
+    /**
+     * 数值流转为为对象流
+     */
+    private static void test8(){
+        IntStream intStream = menu.stream().mapToInt(Dish::getCalories);
+        Stream<Integer> boxed = intStream.boxed();//将数值流转换为stream
+    }
+
+    /**
+     * 数值范围
+     */
+    private static void test9(){
+//        他的静态方法
+        IntStream intStream = IntStream.rangeClosed(1, 100).filter(value -> value % 2 == 0);
+        System.out.print(intStream.count());
+    }
+    /**
+     * 由数值创建流
+     */
+    private static void test10(){
+        Stream<String> java = Stream.of("java", "ios");
+        Stream<Object> empty = Stream.empty();
     }
 }
