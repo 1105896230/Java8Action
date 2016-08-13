@@ -5,16 +5,25 @@ package date_class;
  */
 
 import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalAdjuster;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
+
+import static java.time.temporal.TemporalAdjusters.lastDayOfMonth;
+import static java.time.temporal.TemporalAdjusters.nextOrSame;
 
 /**
  * 新的日期和时间API
  */
 public class DateTimeExamples {
     public static void main(String[] args) {
-        test7();
+        useDateFormatter();
     }
 
 
@@ -110,6 +119,64 @@ public class DateTimeExamples {
      * 根据毫秒去生存时间 他去生成时间
      */
     private static void test7() {
+        Instant instant = Instant.ofEpochSecond(44 * 365 * 86400);
+        Instant now = instant.now();
+        Instant instant1 = instant.ofEpochSecond(3, 0);
+        //2秒之后再加上1秒
+        Instant instant2 = instant.ofEpochSecond(2, 1_000_000_000);
+        //4秒之前在减去1秒
+        Instant instant3 = instant.ofEpochSecond(4, -1_000_000_000);
 
+//        会抛出异常
+        int i = instant.get(ChronoField.DAY_OF_MONTH);
+    }
+
+    private static void test8() {
+        LocalDate date = LocalDate.of(2014, 3, 18);
+        date = date.with(nextOrSame(DayOfWeek.SUNDAY));
+        System.out.println(date);
+        date = date.with(lastDayOfMonth());
+        System.out.println(date);
+        date = date.with(new NextWorkingDay());
+        System.out.println(date);
+        date = date.with(nextOrSame(DayOfWeek.FRIDAY));
+        System.out.println(date);
+        date = date.with(new NextWorkingDay());
+        System.out.println(date);
+
+    }
+
+
+    private static class NextWorkingDay implements TemporalAdjuster {
+        @Override
+        public Temporal adjustInto(Temporal temporal) {
+            DayOfWeek dow = DayOfWeek.of(temporal.get(ChronoField.DAY_OF_WEEK));
+            int dayToAdd = 1;
+            if (dow == DayOfWeek.FRIDAY) dayToAdd = 3;
+            if (dow == DayOfWeek.SATURDAY) dayToAdd = 2;
+            return temporal.plus(dayToAdd, ChronoUnit.DAYS);
+        }
+
+    }
+
+    private static void useDateFormatter() {
+        LocalDate date = LocalDate.of(2014, 3, 18);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter italianFormatter = DateTimeFormatter.ofPattern("d. MMMM yyyy", Locale.ITALIAN);
+
+        System.out.println(date.format(DateTimeFormatter.ISO_LOCAL_DATE));
+        System.out.println(date.format(formatter));
+        System.out.println(date.format(italianFormatter));
+
+        DateTimeFormatter complexFormatter = new DateTimeFormatterBuilder()
+                .appendText(ChronoField.DAY_OF_MONTH)
+                .appendLiteral(". ")
+                .appendText(ChronoField.MONTH_OF_YEAR)
+                .appendLiteral(" ")
+                .appendText(ChronoField.YEAR)
+                .parseCaseInsensitive()
+                .toFormatter(Locale.ITALIAN);
+
+        System.out.println(date.format(complexFormatter));
     }
 }
