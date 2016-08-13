@@ -4,10 +4,7 @@ package date_class;
  * Created by Administrator on 2016/8/13 0013.
  */
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.Month;
+import java.time.*;
 import java.time.temporal.ChronoField;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,7 +14,7 @@ import java.util.Date;
  */
 public class DateTimeExamples {
     public static void main(String[] args) {
-        test4();
+        test7();
     }
 
 
@@ -83,5 +80,36 @@ public class DateTimeExamples {
         System.out.println(y);
         System.out.println(m);
         System.out.println(d);
+    }
+
+
+    /**
+     * LocalDateTime 复合类 ，是LocalDate和LocalTime的合体
+     */
+    private static void test5() {
+        LocalDateTime dt1 = LocalDateTime.of(2014, Month.MARCH, 18, 13, 45, 20); // 2014-03-18T13:45
+        System.out.println(dt1);
+    }
+
+    /**
+     * LocalDateTime 复合类 可以根据LocalDatime 获取 localTime 和localDate
+     */
+    private static void test6() {
+        LocalDateTime dt1 = LocalDateTime.of(2014, Month.MARCH, 18, 13, 45, 20); // 2014-03-18T13:45
+        System.out.println(dt1);
+
+        LocalDate date1 = dt1.toLocalDate();
+        System.out.println(date1);
+        LocalTime time1 = dt1.toLocalTime();
+        System.out.println(time1);
+    }
+
+
+    /**
+     * Instant 是让计算器去理解时间 ，可以获取时间戳等
+     * 根据毫秒去生存时间 他去生成时间
+     */
+    private static void test7() {
+
     }
 }
