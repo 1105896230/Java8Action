@@ -17,9 +17,7 @@ import static six_class.streamDemo.transactions;
  * Created by Administrator on 2016/8/14 0014.
  */
 public class blookDemo {
-    public static void main(String[] args) {
-        test5();
-    }
+
 
     private void test() {
 //        Transaction mostExpensive=transactions.get(0);
@@ -55,6 +53,7 @@ public class blookDemo {
         stream.forEach(System.out::println);
         stream.forEach(System.out::println);
     }
+
     private static void test4() {
         List<Integer> numbers = Arrays.asList(1, 2, 1, 3, 3, 2, 4);
         numbers.stream()
@@ -62,11 +61,50 @@ public class blookDemo {
                 .distinct()
                 .forEach(System.out::println);
     }
-    private static void test5(){
+
+    private static void test5() {
         List<Dish> dishesSkip2 =
                 menu.stream()
                         .filter(d -> d.getCalories() > 300)
                         .skip(2)
                         .collect(toList());
+    }
+
+    private static void test6() {
+        List<String> words = Arrays.asList("Hello", "World");
+        List<Integer> wordLengths = words.stream()
+                .map(s -> s.split(""))
+                .collect(toList());
+        System.out.println(wordLengths);
+
+        words.stream()
+                .flatMap((String line) -> Arrays.stream(line.split("")))
+                .distinct()
+                .forEach(System.out::println);
+    }
+    private static boolean isVegetarianFriendlyMenu(){
+        return menu.stream().anyMatch(Dish::isVegetarian);
+    }
+
+    private static boolean isHealthyMenu(){
+        return menu.stream().allMatch(d -> d.getCalories() < 1000);
+    }
+
+    private static boolean isHealthyMenu2(){
+        return menu.stream().noneMatch(d -> d.getCalories() >= 1000);
+    }
+
+    private static Optional<Dish> findVegetarianDish(){
+        return menu.stream().filter(Dish::isVegetarian).findAny();
+    }
+
+    private static void test7(){
+        Optional<Dish> any = menu
+                .stream()
+                .filter(Dish::isVegetarian)
+                .findAny();
+    }
+    public static void main(String[] args) {
+        isVegetarianFriendlyMenu();
     }
 }
