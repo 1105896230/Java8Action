@@ -37,4 +37,6 @@ public class ToListCollector<T> implements Collector<T, List<T>, List<T>> {
     public Set<Characteristics> characteristics() {
         return Collections.unmodifiableSet(EnumSet.of(IDENTITY_FINISH, CONCURRENT));
     }
+
+
 }
